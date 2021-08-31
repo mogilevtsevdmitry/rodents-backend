@@ -5,7 +5,7 @@ import { UserService } from '../user/user.service'
 import { UserEntity } from '../user/user.entity'
 import { AuthHelper } from './auth.helper'
 import { TokenDto } from './token-dto'
-import { jwtConstants } from './jwt.constants'
+import { IAuthPayload } from './auth.interfaces'
 
 
 @Injectable()
@@ -25,12 +25,12 @@ export class AuthService {
     if (!isMath) {
       throw new Error('Пароли не совпадают!')
     }
-    const payload: { email: string, userId: number } = { email: candidate.email, userId: candidate.id }
+    const payload: IAuthPayload = { email: candidate.email, userId: candidate.id }
     const token = `Bearer ${this.jwtService.sign(payload)}`
     return {
       id: candidate.id,
       access_token: token,
-      expiresIn: jwtConstants.expiresIn,
+      expiresIn: Number(process.env.JWT_IXPIRESIN),
     }
   }
 

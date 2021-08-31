@@ -1,8 +1,8 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql'
 
-import { AuthService } from './auth.service'
-import { UserInput } from '../user/user.input'
+import { UserCreateInput } from '../user/input/user-create.input'
 import { UserEntity } from '../user/user.entity'
+import { AuthService } from './auth.service'
 import { TokenDto } from './token-dto'
 
 
@@ -11,13 +11,13 @@ export class AuthResolver {
   constructor(private authService: AuthService) {
   }
 
-  @Mutation(returns => TokenDto)
-  async login(@Args('user') user: UserInput) {
+  @Mutation(() => TokenDto)
+  async login(@Args('user') user: UserCreateInput) {
     return await this.authService.login(user)
   }
 
-  @Mutation(returns => UserEntity)
-  async register(@Args('user') user: UserInput) {
+  @Mutation(() => UserEntity)
+  async register(@Args('user') user: UserCreateInput) {
     return await this.authService.register(user)
   }
 }

@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module'
 
-require("dotenv").config()
 
 @Module({
   imports: [
@@ -29,7 +28,7 @@ require("dotenv").config()
       ]
     }),
     GraphQLModule.forRoot({
-      autoSchemaFile: true,
+      autoSchemaFile: 'schema.gql',
       sortSchema: true,
       installSubscriptionHandlers: true,
       definitions: {

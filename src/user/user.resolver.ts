@@ -4,7 +4,7 @@ import { UseGuards } from '@nestjs/common'
 import { GqlAuthGuard } from '../auth/gql-auth.guard'
 import { UserEntity } from './user.entity'
 import { UserService } from './user.service'
-import { UserInput } from './user.input'
+import { UserUpdateInput } from './input/user-update.input'
 
 
 @Resolver('Users')
@@ -31,25 +31,24 @@ export class UserResolver {
     return await this.userService.getByEmail(email)
   }
 
-  @Mutation(() => UserEntity)
-  async createUser(@Args('user') user: UserInput): Promise<UserEntity> {
-    return await this.userService.create(user)
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [UserEntity])
+  async getAll() {
+    return await this.userService.getAll()
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(returns => Boolean)
+  @Mutation(() => Boolean)
   async deleteUser(@Args('id', { type: () => ID }) id: number): Promise<boolean> {
-    return await this.userService.delete(id)
+    return await this.userService.removeById(id)
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(returns => Boolean)
+  @Mutation(() => UserEntity)
   async updateUser(
-    @Args('id', { type: () => ID }) id: number,
-    @Args('user') user: UserInput
-  ): Promise<boolean> {
-    await this.userService.update(id, user)
-    return true
+    @Args('user') user: UserUpdateInput,
+  ): Promise<UserEntity> {
+    return await this.userService.updateUser(user)
   }
 
 }

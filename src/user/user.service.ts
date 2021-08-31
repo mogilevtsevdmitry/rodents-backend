@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { DeleteResult, Repository, UpdateResult } from 'typeorm'
+import { Repository } from 'typeorm'
 
 import { UserEntity } from './user.entity'
 import { AuthHelper } from '../auth/auth.helper'
-import { UserInput } from './user.input'
+import { UserUpdateInput } from './input/user-update.input'
 
 
 @Injectable()
@@ -30,28 +30,38 @@ export class UserService {
     return await this.userEntityRepository.findOne({ id }) || null
   }
 
+  async getAll(): Promise<UserEntity[]> {
+    return await this.userEntityRepository.find()
+  }
+
   async getByEmail(email: string): Promise<UserEntity> {
     return await this.userEntityRepository.findOne({ email: email.toLocaleLowerCase().trim() }) || null
   }
 
-  async delete(id: number): Promise<boolean> {
+  async removeById(id: number): Promise<boolean> {
     const deletedResult = await this.userEntityRepository.delete({ id })
     console.log('DeleteResult', deletedResult)
     return true
   }
 
-  async update(id: number, user: UserInput) {
+  async updateUser(user: UserUpdateInput): Promise<UserEntity> {
+    const hashPass = user.password ? await AuthHelper.hash(user.password) : null
+    const newEmail = user.email ? user.email.toLocaleLowerCase().trim() : null
+    const dataToUpdate = { ...user }
+    if (hashPass) {
+      dataToUpdate['password'] = hashPass
+    }
+    if (newEmail) {
+      dataToUpdate['email'] = newEmail
+    }
     await this.userEntityRepository.update(
       {
-        id,
+        id: user.id,
       }, {
-        ...user,
-        email: user.email.toLocaleLowerCase().trim(),
+        ...dataToUpdate,
       },
     )
-    const updatedUser = await this.getById(id)
-    console.log('updatedUser', updatedUser)
-    // return true
+    return await this.getById(user.id)
   }
 
 }
