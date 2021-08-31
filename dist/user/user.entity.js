@@ -17,7 +17,7 @@ let UserEntity = class UserEntity extends base_entity_1.BaseEntity {
 };
 __decorate([
     graphql_1.Field({ nullable: false }),
-    typeorm_1.Column(),
+    typeorm_1.Column({ unique: true }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "email", void 0);
 __decorate([

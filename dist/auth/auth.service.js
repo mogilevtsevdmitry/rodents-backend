@@ -13,6 +13,8 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const user_service_1 = require("../user/user.service");
+const auth_helper_1 = require("./auth.helper");
+const jwt_constants_1 = require("./jwt.constants");
 let AuthService = class AuthService {
     constructor(userService, jwtService) {
         this.userService = userService;
@@ -21,9 +23,9 @@ let AuthService = class AuthService {
     async login(user) {
         const candidate = await this.userService.getByEmail(user.email);
         if (!candidate) {
-            throw new common_1.NotFoundException(`Пользователь с email ${user.email} не найден!`);
+            throw new common_1.NotFoundException(`Пользователь с email ${candidate.email} не найден!`);
         }
-        const isMath = this.validateUser(user.password, candidate.password);
+        const isMath = await this.validateUser(user, candidate);
         if (!isMath) {
             throw new Error('Пароли не совпадают!');
         }
@@ -32,14 +34,14 @@ let AuthService = class AuthService {
         return {
             id: candidate.id,
             access_token: token,
-            expiresIn: Number(process.env.JWT_EXPIRESIN)
+            expiresIn: jwt_constants_1.jwtConstants.expiresIn,
         };
+    }
+    async validateUser(user, candidate) {
+        return auth_helper_1.AuthHelper.validate(user.password, candidate.password);
     }
     async register(user) {
         return this.userService.create(user);
-    }
-    async validateUser(payload) {
-        return this.userService.getByEmail(payload.email);
     }
 };
 AuthService = __decorate([

@@ -7,6 +7,7 @@ import { AuthResolver } from './auth.resolver'
 import { UserModule } from '../user/user.module'
 import { JwtStrategy } from './jwt.strategy'
 import { GqlAuthGuard } from './gql-auth.guard'
+import { jwtConstants } from './jwt.constants'
 
 
 @Module({
@@ -14,9 +15,9 @@ import { GqlAuthGuard } from './gql-auth.guard'
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: jwtConstants.secret,
       signOptions: {
-        expiresIn: Number(process.env.JWT_EXPIRESIN)
+        expiresIn: jwtConstants.expiresIn
       },
     }),
   ],

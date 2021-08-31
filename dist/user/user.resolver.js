@@ -35,6 +35,10 @@ let UserResolver = class UserResolver {
     async deleteUser(id) {
         return await this.userService.delete(id);
     }
+    async updateUser(id, user) {
+        await this.userService.update(id, user);
+        return true;
+    }
 };
 __decorate([
     common_1.UseGuards(gql_auth_guard_1.GqlAuthGuard),
@@ -67,6 +71,15 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "deleteUser", null);
+__decorate([
+    common_1.UseGuards(gql_auth_guard_1.GqlAuthGuard),
+    graphql_1.Mutation(returns => Boolean),
+    __param(0, graphql_1.Args('id', { type: () => graphql_1.ID })),
+    __param(1, graphql_1.Args('user')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, user_input_1.UserInput]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "updateUser", null);
 UserResolver = __decorate([
     graphql_1.Resolver('Users'),
     __metadata("design:paramtypes", [user_service_1.UserService])

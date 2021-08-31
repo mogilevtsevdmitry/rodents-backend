@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { DeleteResult, Repository, UpdateResult } from 'typeorm'
 
 import { UserEntity } from './user.entity'
 import { AuthHelper } from '../auth/auth.helper'
+import { UserInput } from './user.input'
 
 
 @Injectable()
@@ -16,6 +17,10 @@ export class UserService {
 
   async create(user: Partial<UserEntity>): Promise<UserEntity> {
     const email = user.email.toLocaleLowerCase().trim()
+    const candidate = await this.getByEmail(email)
+    if (candidate) {
+      throw new HttpException(`Пользователь с email: ${email} уже существует!`, HttpStatus.CONFLICT)
+    }
     const password = await AuthHelper.hash(user.password)
     const newUser = await this.userEntityRepository.create({ ...user, email, password })
     return await this.userEntityRepository.save(newUser)
@@ -35,15 +40,18 @@ export class UserService {
     return true
   }
 
-  async update(user: Partial<UserEntity>): Promise<boolean> {
-    const updatedUser = await this.userEntityRepository.update(
+  async update(id: number, user: UserInput) {
+    await this.userEntityRepository.update(
       {
+        id,
+      }, {
         ...user,
         email: user.email.toLocaleLowerCase().trim(),
-      }, user,
+      },
     )
+    const updatedUser = await this.getById(id)
     console.log('updatedUser', updatedUser)
-    return true
+    // return true
   }
 
 }

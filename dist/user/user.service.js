@@ -24,6 +24,10 @@ let UserService = class UserService {
     }
     async create(user) {
         const email = user.email.toLocaleLowerCase().trim();
+        const candidate = await this.getByEmail(email);
+        if (candidate) {
+            throw new common_1.HttpException(`Пользователь с email: ${email} уже существует!`, common_1.HttpStatus.CONFLICT);
+        }
         const password = await auth_helper_1.AuthHelper.hash(user.password);
         const newUser = await this.userEntityRepository.create(Object.assign(Object.assign({}, user), { email, password }));
         return await this.userEntityRepository.save(newUser);
@@ -39,10 +43,12 @@ let UserService = class UserService {
         console.log('DeleteResult', deletedResult);
         return true;
     }
-    async update(user) {
-        const updatedUser = await this.userEntityRepository.update(Object.assign(Object.assign({}, user), { email: user.email.toLocaleLowerCase().trim() }), user);
+    async update(id, user) {
+        await this.userEntityRepository.update({
+            id,
+        }, Object.assign(Object.assign({}, user), { email: user.email.toLocaleLowerCase().trim() }));
+        const updatedUser = await this.getById(id);
         console.log('updatedUser', updatedUser);
-        return true;
     }
 };
 UserService = __decorate([

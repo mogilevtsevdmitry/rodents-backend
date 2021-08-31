@@ -2,12 +2,11 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { UserEntity } from '../user/user.entity';
 import { TokenDto } from './token-dto';
-import { UserInput } from '../user/user.input';
 export declare class AuthService {
-    private userService;
-    private jwtService;
+    private readonly userService;
+    private readonly jwtService;
     constructor(userService: UserService, jwtService: JwtService);
     login(user: Partial<UserEntity>): Promise<TokenDto>;
+    validateUser(user: Partial<UserEntity>, candidate: UserEntity): Promise<boolean>;
     register(user: Partial<UserEntity>): Promise<UserEntity>;
-    validateUser(payload: UserInput): Promise<UserEntity>;
 }

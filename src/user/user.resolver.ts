@@ -42,10 +42,14 @@ export class UserResolver {
     return await this.userService.delete(id)
   }
 
-  // @UseGuards(GqlAuthGuard)
-  // @Mutation(returns => Boolean)
-  // async updateUser(@Args('user') user: Partial<UserEntity>): Promise<boolean> {
-  //   return await this.userService.update(user)
-  // }
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => Boolean)
+  async updateUser(
+    @Args('id', { type: () => ID }) id: number,
+    @Args('user') user: UserInput
+  ): Promise<boolean> {
+    await this.userService.update(id, user)
+    return true
+  }
 
 }

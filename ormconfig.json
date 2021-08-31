@@ -3,13 +3,13 @@
   "host": "localhost",
   "port": 5432,
   "username": "postgres",
-  "password": "root",
+  "password": "12345",
   "database": "rodents",
   "dropSchema": false,
   "synchronize": true,
   "logging": true,
   "autoLoadEntities": true,
   "entities": [
-    "./dist/**/*.entity{.ts,.js}"
+    "dist/**/*.entity{.ts,.js}"
   ]
 }

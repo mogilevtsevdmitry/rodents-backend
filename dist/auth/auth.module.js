@@ -15,6 +15,7 @@ const auth_resolver_1 = require("./auth.resolver");
 const user_module_1 = require("../user/user.module");
 const jwt_strategy_1 = require("./jwt.strategy");
 const gql_auth_guard_1 = require("./gql-auth.guard");
+const jwt_constants_1 = require("./jwt.constants");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -23,9 +24,9 @@ AuthModule = __decorate([
             user_module_1.UserModule,
             passport_1.PassportModule,
             jwt_1.JwtModule.register({
-                secret: process.env.JWT_SECRET,
+                secret: jwt_constants_1.jwtConstants.secret,
                 signOptions: {
-                    expiresIn: Number(process.env.JWT_EXPIRESIN)
+                    expiresIn: jwt_constants_1.jwtConstants.expiresIn
                 },
             }),
         ],

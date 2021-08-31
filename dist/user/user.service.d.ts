@@ -1,5 +1,6 @@
 import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { UserInput } from './user.input';
 export declare class UserService {
     private readonly userEntityRepository;
     constructor(userEntityRepository: Repository<UserEntity>);
@@ -7,5 +8,5 @@ export declare class UserService {
     getById(id: number): Promise<UserEntity>;
     getByEmail(email: string): Promise<UserEntity>;
     delete(id: number): Promise<boolean>;
-    update(user: Partial<UserEntity>): Promise<boolean>;
+    update(id: number, user: UserInput): Promise<void>;
 }

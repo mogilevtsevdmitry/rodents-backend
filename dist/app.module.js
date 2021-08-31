@@ -10,14 +10,33 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const graphql_1 = require("@nestjs/graphql");
+const config_1 = require("@nestjs/config");
 const user_module_1 = require("./user/user.module");
 const auth_module_1 = require("./auth/auth.module");
+require("dotenv").config();
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     common_1.Module({
         imports: [
-            typeorm_1.TypeOrmModule.forRoot(),
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
+            typeorm_1.TypeOrmModule.forRoot({
+                type: process.env.DB_TYPE,
+                host: process.env.DB_HOST,
+                port: Number(process.env.DB_PORT) || 5432,
+                username: process.env.DB_USERNAME,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB_DATABASE,
+                dropSchema: false,
+                synchronize: true,
+                logging: true,
+                autoLoadEntities: true,
+                entities: [
+                    "dist/**/*.entity{.ts,.js}"
+                ]
+            }),
             graphql_1.GraphQLModule.forRoot({
                 autoSchemaFile: true,
                 sortSchema: true,

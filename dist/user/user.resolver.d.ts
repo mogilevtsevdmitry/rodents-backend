@@ -8,4 +8,5 @@ export declare class UserResolver {
     getUserByEmail(email: string): Promise<UserEntity>;
     createUser(user: UserInput): Promise<UserEntity>;
     deleteUser(id: number): Promise<boolean>;
+    updateUser(id: number, user: UserInput): Promise<boolean>;
 }
